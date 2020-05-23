@@ -2,13 +2,17 @@ from sly import Lexer, Parser
 
 decimalsubmultiple = r"(a|c|d|f|m|n|p|u|y|z)"
 decimalmultiple = r"(E|G|M|P|T|Y|Z|da|h|k)"
-unitb = (
-    r"([A-Z][A-Z][A-Z]|A|Bq|C|F|Gy|H|Hz|J|K|N|Ohm|Pa|Sv|S|T|V|W|Wb"
-    r"|bit|cd|eV|g|kat|lm|lx|mol|m|s)"
-)
-unitn = r"(L|Np|oC|o|rad|sr)"
-unitp = r"(Bd|B|r|t)"
 binary = r"(Ei|Gi|Ki|Mi|Pi|Ti)"
+unitc = [r"[A-Z][A-Z][A-Z]|A|Bq|C",
+         r"dB|d|h|min|u",
+         r"F|Gy|Hz|H|J|K|Np|N|(Ohm|Ω)|Pa|Sv|S|T|V|W|Wb",
+         r"L|(oC|°C)|o|rad|sr",
+         r"bit|cd|eV|g|kat|lm|lx|mol|m|s|µ",
+         r"Bd|B|r|t"]
+unitb = r"(" + r'|'.join([unitc[0], unitc[2], unitc[4]]) + r")"
+unitn = r"(" + unitc[3] + r")"
+unitp = r"(" + unitc[5] + r")"
+units = r"(" + unitc[2] + r")"
 
 
 class CMIXFLexer(Lexer):
@@ -19,10 +23,7 @@ class CMIXFLexer(Lexer):
         SUBMULTIN,
         MULTIB,
         SUBMULTIB,
-        UNITP,
-        UNITN,
-        UNITB,
-        UNITS,
+        UNITC,
         DOT,
         DIV,
         LPAREN,
@@ -40,16 +41,13 @@ class CMIXFLexer(Lexer):
     EXP = r"\^"
     REAL = r"-?\d*\.?\d+(?:[eE][-+]?\d+)?"
     DOT = r"\."
+    BIT = binary + r"bit"
+    BYTE = binary + r"B"
+    UNITC = r'|'.join(unitc)
     MULTIP = decimalmultiple + unitp
     SUBMULTIN = decimalsubmultiple + unitn
     MULTIB = decimalmultiple + unitb
     SUBMULTIB = decimalsubmultiple + unitb
-    BIT = binary + r"bit"
-    BYTE = binary + r"B"
-    UNITS = r"(dB|d|h|min|u)"
-    UNITB = unitb
-    UNITN = unitn
-    UNITP = unitp
 
     def error(self, t):
         raise ValueError("Line %d: Bad character %r" % (self.lineno, t.value[0]))
@@ -193,21 +191,9 @@ class CMIXFParser(Parser):
     def punit(self, p):
         return p.BIT
 
-    @_("UNITP")
+    @_("UNITC")
     def punit(self, p):
-        return p.UNITP
-
-    @_("UNITN")
-    def punit(self, p):
-        return p.UNITN
-
-    @_("UNITB")
-    def punit(self, p):
-        return p.UNITB
-
-    @_("UNITS")
-    def punit(self, p):
-        return p.UNITS
+        return p.UNITC
 
     @_("REAL")
     def real(self, p):
