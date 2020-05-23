@@ -1,8 +1,8 @@
-![Python package](https://github.com/satra/cmixf/workflows/Python%20package/badge.svg?branch=master)
+![Python package](https://github.com/sensein/cmixf/workflows/Python%20package/badge.svg?branch=master)
 
 # cmixf
 
-A library to parse cmixf
+A library to parse [CMIXF-12](https://people.csail.mit.edu/jaffer/MIXF/CMIXF-12).
 
 ## For developers:
 
