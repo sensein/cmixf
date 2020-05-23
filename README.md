@@ -4,6 +4,10 @@
 
 A library to parse [CMIXF-12](https://people.csail.mit.edu/jaffer/MIXF/CMIXF-12).
 
+This will install a CLI `cmixf` when installed.
+
+At present this assumes that a number is provided before any unit.
+
 ## For developers:
 
 After cloning the repo do:

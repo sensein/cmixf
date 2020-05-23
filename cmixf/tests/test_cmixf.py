@@ -73,6 +73,13 @@ def test_real(text, exception):
         "1EUR/kg",
         "1JPY/USD",
         "1",
+        "1mol/m^3",
+        "1W/sr",
+        "1W/(m^2.sr)",
+        "1J/mol",
+        "1J/(mol.K)",
+        "1nV/Hz^(1/2)",
+        "1Mibit/s",
     ],
 )
 def test_cmixf_examples(text):
@@ -81,20 +88,15 @@ def test_cmixf_examples(text):
     assert isinstance(parser.parse(lexer.tokenize(text)), str)
 
 
-@pytest.mark.xfail()
 @pytest.mark.parametrize(
     "text",
     [
-        "1mol/m^3",
-        "1W/sr",
-        "1W/(m^2.sr)",
-        "1J/mol",
-        "1J/(mol.K)",
-        "1nV/Hz^(1/2)",
-        "1Mib/s",
+        "1µ",
+        "1°C",
+        "1Ω",
     ],
 )
-def test_cmixf_failures(text):
+def test_bids_chars(text):
     lexer = CMIXFLexer()
     parser = CMIXFParser()
     assert isinstance(parser.parse(lexer.tokenize(text)), str)
