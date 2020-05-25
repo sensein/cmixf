@@ -106,6 +106,7 @@ def test_bids_chars(text):
     "text",
     [
         "1µV",
+        "1uV",
         "1ms",
         "1kBq",
     ],
