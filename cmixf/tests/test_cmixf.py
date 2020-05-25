@@ -1,6 +1,6 @@
 import pytest
 
-from ..parser import CMIXFLexer, CMIXFParser
+from ..parser import CMIXFLexer, CMIXFParser, create_combos
 
 
 @pytest.mark.parametrize(
@@ -80,6 +80,9 @@ def test_real(text, exception):
         "1J/(mol.K)",
         "1nV/Hz^(1/2)",
         "1Mibit/s",
+        "1ms",
+        "1kBq",
+        "1mL",
     ],
 )
 def test_cmixf_examples(text):
@@ -94,6 +97,8 @@ def test_cmixf_examples(text):
         "1µm",
         "1°C",
         "1Ω",
+        "1µV",
+        "1uV",
     ],
 )
 def test_bids_chars(text):
@@ -104,14 +109,10 @@ def test_bids_chars(text):
 
 @pytest.mark.parametrize(
     "text",
-    [
-        "1µV",
-        "1uV",
-        "1ms",
-        "1kBq",
-    ],
+    create_combos()
 )
-def test_new_errors(text):
+def test_combos(text):
     lexer = CMIXFLexer()
     parser = CMIXFParser()
     assert isinstance(parser.parse(lexer.tokenize(text)), str)
+
