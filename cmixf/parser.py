@@ -1,18 +1,19 @@
 from sly import Lexer, Parser
 
-decimalsubmultiple = r"(a|c|d|f|m|n|p|u|y|z)"
+decimalsubmultiple = r"(a|c|d|f|m|n|p|(u|µ)|y|z)"
 decimalmultiple = r"(E|G|M|P|T|Y|Z|da|h|k)"
 binary = r"(Ei|Gi|Ki|Mi|Pi|Ti)"
-unitc = [r"[A-Z][A-Z][A-Z]|A|Bq|C",
-         r"dB|d|h|min|u",
-         r"F|Gy|Hz|H|J|K|Np|N|(Ohm|Ω)|Pa|Sv|S|T|V|W|Wb",
-         r"L|(oC|°C)|o|rad|sr",
-         r"bit|cd|eV|g|kat|lm|lx|mol|m|s|µ",
-         r"Bd|B|r|t"]
-unitb = r"(" + r'|'.join([unitc[0], unitc[2], unitc[4]]) + r")"
-unitn = r"(" + unitc[3] + r")"
-unitp = r"(" + unitc[5] + r")"
-units = r"(" + unitc[2] + r")"
+unitc = {"unitb1": r"[A-Z][A-Z][A-Z]|A|Bq|C",
+         "units": r"dB|d|h|min|u",
+         "unitb2": r"F|Gy|Hz|H|J|K|Np|N|(Ohm|Ω)|Pa|Sv|S|T|V|W|Wb",
+         "unitn": r"L|(oC|°C)|(°|o)|rad|sr",
+         "unitb3": r"bit|cd|eV|g|kat|lm|lx|mol|m|s",
+         "unitp": r"Bd|B|r|t"}
+unitb = r"(" + r'|'.join([unitc["unitb1"], unitc["unitb2"],
+                          unitc["unitb3"]]) + r")"
+unitn = r"(" + unitc["unitn"] + r")"
+unitp = r"(" + unitc["unitp"] + r")"
+units = r"(" + unitc["units"] + r")"
 
 
 class CMIXFLexer(Lexer):
@@ -43,11 +44,11 @@ class CMIXFLexer(Lexer):
     DOT = r"\."
     BIT = binary + r"bit"
     BYTE = binary + r"B"
-    UNITC = r'|'.join(unitc)
-    MULTIP = decimalmultiple + unitp
-    SUBMULTIN = decimalsubmultiple + unitn
     MULTIB = decimalmultiple + unitb
     SUBMULTIB = decimalsubmultiple + unitb
+    MULTIP = decimalmultiple + unitp
+    UNITC = r'|'.join([val for val in unitc.values()])
+    SUBMULTIN = decimalsubmultiple + unitn
 
     def error(self, t):
         raise ValueError("Line %d: Bad character %r" % (self.lineno, t.value[0]))
