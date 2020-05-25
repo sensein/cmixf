@@ -4,43 +4,50 @@
 
 A library to parse [CMIXF-12](https://people.csail.mit.edu/jaffer/MIXF/CMIXF-12).
 
-This will install a CLI `cmixf` when installed.
-
-At present this assumes that a number is provided before any unit.
-
 ## For users:
 
+To install from PyPi.
+
 ```
-$ pip install cmixf # requires a python 3 environment 
+$ pip install cmixf 
+```
+
+This will install a command line interface called `cmixf`.
+
+```
+$ cmixf --help
+Usage: cmixf [OPTIONS] [TEXT]...
+
+Options:
+  -d, --debug  Turn on token debugging
+  --help       Show this message and exit.
+```
+
+At present this assumes that a number is provided before any unit. To better 
+understand which characters are erroneous you can turn on the debug flag.
+
+1. Without debugging on:
+
+```
 $ cmixf
-cmixf > 1mV
-type='REAL', value='1'
-type='SUBMULTIB', value='mV'
+cmixf (Ctrl+d to quit) > 1mV
 1mV
-cmixf > 1oC
-type='REAL', value='1'
-type='UNITC', value='oC'
+cmixf (Ctrl+d to quit) > 1oC
 1oC
-cmixf > <Ctrl+D to exit>
+cmixf (Ctrl+d to quit) > 1mM
+FAILED:  Line 1: Bad character 'M'
+cmixf (Ctrl+d to quit) > 
 ```
 
-If it fails it will raise an error and exit. 
+2. With debugging turned on:
 
 ```
-$ cmixf
-cmixf > 1mM
+$ cmixf --debug
+cmixf (Ctrl+d to quit) > 1mM
 type='REAL', value='1'
 type='UNITC', value='m'
-Traceback (most recent call last):
-  File "/Users/satra/software/miniconda3/envs/mixf/bin/cmixf", line 11, in <module>
-    load_entry_point('cmixf', 'console_scripts', 'cmixf')()
-  File "/Users/satra/software/sensein/cmixf/cmixf/parser.py", line 217, in main
-    for tok in lexer.tokenize(text):
-  File "/Users/satra/software/miniconda3/envs/mixf/lib/python3.8/site-packages/sly/lex.py", line 443, in tokenize
-    tok = self.error(tok)
-  File "/Users/satra/software/sensein/cmixf/cmixf/parser.py", line 54, in error
-    raise ValueError("Line %d: Bad character %r" % (self.lineno, t.value[0]))
-ValueError: Line 1: Bad character 'M'
+FAILED:  Line 1: Bad character 'M'
+cmixf (Ctrl+d to quit) > 
 ```
 
 ## For developers:
