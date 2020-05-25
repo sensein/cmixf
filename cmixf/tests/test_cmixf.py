@@ -91,12 +91,26 @@ def test_cmixf_examples(text):
 @pytest.mark.parametrize(
     "text",
     [
-        "1µ",
+        "1µm",
         "1°C",
         "1Ω",
     ],
 )
 def test_bids_chars(text):
+    lexer = CMIXFLexer()
+    parser = CMIXFParser()
+    assert isinstance(parser.parse(lexer.tokenize(text)), str)
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "1µV",
+        "1ms",
+        "1kBq",
+    ],
+)
+def test_new_errors(text):
     lexer = CMIXFLexer()
     parser = CMIXFParser()
     assert isinstance(parser.parse(lexer.tokenize(text)), str)
